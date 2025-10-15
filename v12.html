@@ -1,0 +1,275 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefeitura Municipal</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.45.0/docxtemplater.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip-utils.js"></script>
+</head>
+<body>
+    <header>
+        <img src="logo_mpcsp.png" alt="Logo da Minha Empresa" class="logo">
+    </header>    
+    <div class="container">
+        <h1>Informe sobre a Prefeitura Municipal</h1>
+        <form id="prefeituraForm">
+            <label for="prefeitura">Prefeitura Municipal:</label>
+            <select id="prefeitura" name="prefeitura">
+                <option value="Campinas">Campinas</option>
+                <option value="Adamantina">Adamantina</option>
+                <option value="Adolfo">Adolfo</option>
+                <option value="Anhembi">Anhembi</option>
+                <option value="Araçatuba">Araçatuba</option>
+                <option value="Aguaí">Aguaí</option>
+                <option value="Águas da Prata">Águas da Prata</option>
+                <option value="Águas de Lindóia">Águas de Lindóia</option>                                 
+            </select><br><br>
+            
+            <label for="problemas">Problemas:</label>
+            <select id="problemas" name="problemas" multiple>
+                <option value="Alterações orçamentárias">Alterações orçamentárias</option>
+                <option value="Déficit orçamentário">Déficit orçamentário</option>
+                <option value="Falta de liquidez">Falta de liquidez</option>
+                <option value="Encargos intempestivos">Encargos intempestivos</option>
+                <option value="Requisitórios de baixa monta">Requisitórios de baixa monta</option>
+                <option value="Precatórios; Motivos: Descumprimento da Emenda Constitucional 109/2021.">Precatórios; Motivos: Descumprimento da Emenda Constitucional 109/2021.</option>
+                <option value="Precatórios; Motivos: Descumprimento do art. 100, §5º, da Constituição Federal.">Precatórios; Motivos: Descumprimento do art. 100, §5º, da Constituição Federal.</option>
+                <option value="Precatórios; Motivos: Sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.">Precatórios; Motivos: Sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.</option>
+                <option value="Precatórios; Requisitórios de Baixa Monta; Motivos: Descumprimento do art. 100, §3º, da Constituição Federal, combinado com o art. 17, §1º, da Lei nº 10.259/2001.">Precatórios; Requisitórios de Baixa Monta; Motivos: Descumprimento do art. 100, §3º, da Constituição Federal, combinado com o art. 17, §1º, da Lei nº 10.259/2001.</option>
+                <option value="Precatórios e Requisitórios de Baixa Monta; Recomendação.">Precatórios e Requisitórios de Baixa Monta; Recomendação.</option>
+            </select><br><br>
+            
+            <label for="recomendacoes">Recomendações:</label>
+            <select id="recomendacoes" name="recomendacoes" multiple>
+                <option value="aprimore_cobranca_divida">Aprimore seu sistema de cobrança da dívida ativa, atentando ao disposto nos artigos 13 e 58...</option>
+                <option value="atente_demandas_educacao">Atente à demanda municipal de educação infantil, com o fito de universalizar, até 2016...</option>
+                <option value="implemente_servico_informacoes">Implemente o Serviço de Informações ao Cidadão, atendendo à exigência do...</option>
+                <option value="adote_mecanismo_eficiente">Adote mecanismo eficiente para controle e individualização...</option>
+                <option value="adote_medidas_concretas">Adorte medidas concretas para o efetivo funcionamento do Sistema de Controle Interno...</option>
+                <option value="adote_medidas_para_atuação">Adote medidas para atuação diferenciada em relação aos maiores devedores inscritos em dívida...</option>
+                <option value="adote_providência_para_garantir">Adote providência para garantir a devida cobrança do Imposto sobre Serviços de Qualquer Natureza...</option>
+            </select><br><br>
+            
+            <label for="itemx">Item X:</label>
+            <select id="itemx" name="itemx" multiple>
+                <option value="parcial_quitação_do_mapa">parcial quitação do Mapa Orçamentário de Precatórios, restando pendente de pagamento...</option>
+                <option value="insuficiência_dos_depósitos">insuficiência dos depósitos mensais em conta especial do Tribunal de Justiça do Estado de São Paulo...</option>
+                <option value="descumprimento_do_prazo">descumprimento do prazo para depósitos de precatórios, ensejando sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT;...</option>
+                <option value="descumprimento_do_prazo_de_60_dias">descumprimento do prazo de 60 dias para pagamento do (s) requisitório (s) de baixa monta, em ofensa...</option>
+            </select><br><br>
+            
+            <button type="button" onclick="gerarRelatorio()">Gerar Relatório</button>
+        </form>
+        
+        <div id="relatorio"></div>
+    </div>
+    <script>
+        // Lista de dados das prefeituras
+        var prefeituras = {
+            "Campinas": {
+                "Id Assessor": "24",
+                "Habitantes": "1223237",
+                "Procurador responsável": "DR. CELSO AUGUSTO MATUCK FERES JR.",
+                "Porte": "Extra Grande",
+                "Matéria": "Contas Anuais"
+            },
+            "Adamantina": {
+                "Id Assessor": "47",
+                "Habitantes": "35153",
+                "Procurador responsável": "DR. CELSO AUGUSTO MATUCK FERES JR.",
+                "Porte": "Médio",
+                "Matéria": "Contas Anuais"
+            },
+            "Adolfo": {
+                "Id Assessor": "21",
+                "Habitantes": "37582",
+                "Procurador responsável": "DR. RAFAEL NEUBERN DEMARCHI COSTA",
+                "Porte": "Médio",
+                "Matéria": "Contas Anuais"
+            },
+            "Anhembi": {
+                "Id Assessor": "24",
+                "Habitantes": "6911",
+                "Procurador responsável": "DR. RAFAEL ANTÔNIO BALDO",
+                "Porte": "Pequeno",
+                "Matéria": "Contas Anuais"
+            },
+            "Araçatuba": {
+                "Id Assessor": "21",
+                "Habitantes": "199210",
+                "Procurador responsável": "DR. JOÃO PAULO GIORDANO FONTES",
+                "Porte": "Grande",
+                "Matéria": "Contas Anuais"
+            },
+            "Aguaí": {
+                "Id Assessor": "57",
+                "Habitantes": "36981",
+                "Procurador responsável": "DRA. ÉLIDA GRAZIANE PINTO",
+                "Porte": "Pequeno",
+                "Matéria": "Contas Anuais"
+            },
+            "Águas da Prata": {
+                "Id Assessor": "57",
+                "Habitantes": "8262",
+                "Procurador responsável": "DRA. RENATA CONSTANTE CESTARI",
+                "Porte": "Pequeno",
+                "Matéria": "Contas Anuais"
+            },
+            "Águas de Lindóia": {
+                "Id Assessor": "57",
+                "Habitantes": "18908",
+                "Procurador responsável": "DR. JOSÉ MENDES NETO",
+                "Porte": "Pequeno",
+                "Matéria": "Contas Anuais"                       
+            }
+        };
+        
+        // Lista de dados dos problemas
+        var problemas = {
+            "Alterações orçamentárias": "Concorre para emissão de parecer desfavorável realizar excessivas alterações orçamentárias, na medida em que sinalizam dissonância entre as principais peças do orçamento, evidenciando planejamento precário ou desapego ao que foi programado, em violação ao princípio básico da responsabilidade fiscal.",
+            "Déficit orçamentário": "Concorre para emissão de parecer desfavorável o resultado negativo da execução orçamentária (déficit), em razão de sua relevância como elemento indicador da gestão fiscal.",
+            "Falta de liquidez": "Concorre para emissão de parecer desfavorável a falta de liquidez financeira, evidenciada pela existência de saldo financeiro devedor ou saldo disponível insuficiente para cobrir os restos a pagar.",
+            "Encargos intempestivos": "Concorre para emissão de parecer desfavorável a não quitação tempestiva dos encargos sociais (INSS e FGTS), na medida em que revela a falta de planejamento financeiro e orçamentário.",
+            "Requisitórios de baixa monta": "O descumprimento do prazo de 60 dias para pagamento dos requisitórios de baixa monta enseja ofensa ao artigo 100, § 3º, da Constituição Federal, combinado com o artigo 17, § 1º, da Lei nº 10.259/2001.",
+            "Precatórios; Motivos: Descumprimento da Emenda Constitucional 109/2021.": "O descumprimento do prazo para quitação do precatório (30/12/2036) enseja sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.",
+            "Precatórios; Motivos: Descumprimento do art. 100, §5º, da Constituição Federal.": "O descumprimento do prazo para depósitos de precatórios, ensejando sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.",
+            "Precatórios; Motivos: Sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.": "Sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.",
+            "Precatórios; Requisitórios de Baixa Monta; Motivos: Descumprimento do art. 100, §3º, da Constituição Federal, combinado com o art. 17, §1º, da Lei nº 10.259/2001.": "O descumprimento do prazo de 60 dias para pagamento do(s) requisitório(s) de baixa monta enseja ofensa ao artigo 100, § 3º, da Constituição Federal, combinado com o artigo 17, § 1º, da Lei nº 10.259/2001.",
+            "Precatórios e Requisitórios de Baixa Monta; Recomendação.": "Adote medidas para atuação diferenciada em relação aos maiores devedores inscritos em dívida ativa e providencie o levantamento dos valores do ISSQN não recolhidos pelas empresas prestadoras de serviços."
+        };
+        
+        // Lista de dados das recomendações
+        var recomendacoes = {
+            "aprimore_cobranca_divida": "Aprimore seu sistema de cobrança da dívida ativa, atentando ao disposto nos artigos 13 e 58 da Lei de Responsabilidade Fiscal, com vistas à diminuição do estoque da dívida ativa.",
+            "atente_demandas_educacao": "Atente à demanda municipal de educação infantil, com o fito de universalizar, até 2016, o atendimento escolar para todas as crianças de 4 a 5 anos, conforme o Plano Nacional de Educação.",
+            "implemente_servico_informacoes": "Implemente o Serviço de Informações ao Cidadão, atendendo à exigência do artigo 9º, § 1º, da Lei de Acesso à Informação (Lei nº 12.527/2011).",
+            "adote_mecanismo_eficiente": "Adote mecanismo eficiente para controle e individualização dos saldos bancários da Prefeitura, conforme preceituam os artigos 52 e 53 da Lei Federal nº 4.320/64.",
+            "adote_medidas_concretas": "Adorte medidas concretas para o efetivo funcionamento do Sistema de Controle Interno, com vistas ao fortalecimento dos mecanismos de fiscalização dos atos de gestão.",
+            "adote_medidas_para_atuação": "Adote medidas para atuação diferenciada em relação aos maiores devedores inscritos em dívida ativa e providencie o levantamento dos valores do ISSQN não recolhidos pelas empresas prestadoras de serviços.",
+            "adote_providência_para_garantir": "Adote providência para garantir a devida cobrança do Imposto sobre Serviços de Qualquer Natureza (ISSQN) das instituições financeiras, observando a legislação pertinente."
+        };
+        
+        // Lista de dados do item X
+        var itemx = {
+            "parcial_quitação_do_mapa": "parcial quitação do Mapa Orçamentário de Precatórios, restando pendente de pagamento o valor de R$ 1.001.300,00.",
+            "insuficiência_dos_depósitos": "insuficiência dos depósitos mensais em conta especial do Tribunal de Justiça do Estado de São Paulo, em descumprimento ao artigo 97, § 10, do Ato das Disposições Constitucionais Transitórias (ADCT).",
+            "descumprimento_do_prazo": "descumprimento do prazo para depósitos de precatórios, ensejando sequestros nas contas municipais e aplicação de sanções previstas no art. 104 do ADCT.",
+            "descumprimento_do_prazo_de_60_dias": "descumprimento do prazo de 60 dias para pagamento do(s) requisitório(s) de baixa monta, em ofensa ao artigo 100, § 3º, da Constituição Federal, combinado com o artigo 17, § 1º, da Lei nº 10.259/2001."
+        };
+        
+        function gerarRelatorio() {
+    var prefeitura = document.getElementById("prefeitura").value;
+    var problemasSelecionados = Array.from(document.getElementById("problemas").selectedOptions).map(option => option.value);
+    var recomendacoesSelecionadas = Array.from(document.getElementById("recomendacoes").selectedOptions).map(option => option.value);
+    var itemxSelecionado = Array.from(document.getElementById("itemx").selectedOptions).map(option => option.value);
+
+    var dadosPrefeitura = prefeituras[prefeitura];
+    var relatorioHTML = "<style>body { font-family: 'Times New Roman', serif; }</style>";
+    var relatorioHTML = "<h2>Relatório sobre " + prefeitura + "</h2>";
+    relatorioHTML += "<p><strong>Id Assessor:</strong> " + dadosPrefeitura["Id Assessor"] + "</p>";
+    relatorioHTML += "<p><strong>Habitantes:</strong> " + dadosPrefeitura["Habitantes"] + "</p>";
+    relatorioHTML += "<p><strong>Procurador responsável:</strong> " + dadosPrefeitura["Procurador responsável"] + "</p>";
+    relatorioHTML += "<p><strong>Porte:</strong> " + dadosPrefeitura["Porte"] + "</p>";
+    relatorioHTML += "<p><strong>Matéria:</strong> " + dadosPrefeitura["Matéria"] + "</p>";
+
+    var textoPadraoTabela = `
+        <p>Em exame, nos termos do art. 71, I, c/c art. 31, §1º, ambos da Constituição Federal, art. 33, XIII, da Constituição Estadual, e art. 2º, II, da Lei Complementar Estadual 709/1993, prestação das contas municipais em epígrafe. A partir das informações obtidas no curso do processo, consideram-se os resultados contidos no quadro abaixo:</p>
+        
+        <table border="1">
+            <tr><th>Item</th><th>Descrição</th></tr>
+            <tr><td>SÍNTESE DO APURADO APÓS CONCLUÍDA A INSTRUÇÃO PROCESSUAL</td><td></td></tr>
+            <tr><td>CONTROLE INTERNO</td><td></td></tr>
+            <tr><td>EXECUÇÃO ORÇAMENTÁRIA - Resultado no exercício</td><td></td></tr>
+            <tr><td>EXECUÇÃO ORÇAMENTÁRIA - Percentual de investimentos</td><td></td></tr>
+            <tr><td>DÍVIDA DE CURTO PRAZO</td><td></td></tr>
+            <tr><td>DÍVIDA DE LONGO PRAZO</td><td></td></tr>
+            <tr><td>PRECATÓRIOS - Foi suficiente o pagamento/depósito de precatórios judiciais?</td><td></td></tr>
+            <tr><td>PRECATÓRIOS - Foi suficiente o pagamento de requisitórios de baixa monta?</td><td></td></tr>
+            <tr><td>ENCARGOS - Efetuados os recolhimentos ao Regime Geral de Previdência Social (INSS)?</td><td></td></tr>
+            <tr><td>ENCARGOS - Efetuados os recolhimentos ao Regime Próprio de Previdência Social?</td><td></td></tr>
+            <tr><td>ENCARGOS - Está cumprindo parcelamentos de débitos de encargos?</td><td></td></tr>
+            <tr><td>TRANSFERÊNCIAS AO LEGISLATIVO - Os repasses atenderam ao limite constitucional?</td><td></td></tr>
+            <tr><td>LRF - Despesa de pessoal em dezembro do exercício em exame</td><td></td></tr>
+            <tr><td>LRF - Atendido o artigo 21, I e III, da LRF?</td><td></td></tr>
+            <tr><td>ENSINO - Aplicação na Educação - artigo 212, CF (limite mínimo de 25%)</td><td></td></tr>
+            <tr><td>ENSINO - Recursos do Fundeb aplicados no exercício (limite mínimo de 90%)</td><td></td></tr>
+            <tr><td>ENSINO - Se diferida, a parcela residual (de até 10%) foi aplicada até 30/04 do exercício subsequente?</td><td></td></tr>
+            <tr><td>ENSINO - Fundeb aplicado na remuneração dos profissionais da educação básica (limite mínimo de 70%)</td><td></td></tr>
+            <tr><td>ENSINO - Complementação da União VAAT ao Fundeb aplicada em despesas de capital no percentual mínimo de 15%</td><td></td></tr>
+            <tr><td>ENSINO - Complementação da União VAAT ao Fundeb aplicado em educação infantil conforme Indicador para Educação Infantil (IEI)?</td><td></td></tr>
+            <tr><td>SAÚDE - Aplicação na Saúde (limite mínimo de 15%)</td><td></td></tr>
+        </table>
+        <p>Observou-se a adequação da instrução processual, na medida em que foram respeitadas as garantias constitucionais do contraditório e da ampla defesa. Diante do perfazimento do devido processo, o Ministério Público de Contas, na condição de fiscal da ordem jurídica, opina pelo prosseguimento do feito, com emissão de PARECER PRÉVIO DESFAVORÁVEL, com recomendações, vez que as contas de governo não se apresentaram dentro dos parâmetros legais e dos indicadores operacionais considerados adequados por esse Tribunal de Contas.</p>
+    `;
+
+    relatorioHTML += textoPadraoTabela;
+
+            if (problemasSelecionados.length > 0) {
+                relatorioHTML += "<h3>Problemas:</h3>";
+                relatorioHTML += "<ul>";
+                problemasSelecionados.forEach(problema => {
+                    relatorioHTML += "<li>" + problema + ": " + problemas[problema] + "</li>";
+                });
+                relatorioHTML += "</ul>";
+            }
+            
+            // Adicionar novo texto padrão após a seção de problemas
+            var textoPadrao2 = `
+                <p>Ante o exposto, o Ministério Público de Contas, na qualidade de fiscal da lei, opina pela emissão de PARECER PRÉVIO DESFAVORÁVEL, notadamente, pelos seguintes motivos:</p>
+            `;
+    
+            relatorioHTML += textoPadrao2;
+
+            if (itemxSelecionado.length > 0) {
+                relatorioHTML += "<h3>Item X:</h3>";
+                relatorioHTML += "<ul>";
+                itemxSelecionado.forEach(item => {
+                    relatorioHTML += "<li>" + itemx[item] + "</li>";
+                });
+                relatorioHTML += "</ul>";
+
+            }
+
+            // Adicionar novo texto padrão após a seção de itemx
+            var textoPadrao3 = `
+                <p>Ademais, o responsável deve adotar providências necessárias ao exato cumprimento da lei (art. 71, IX, da Constituição Federal e art. 33, X, da Constituição Estadual) e aprimorar a gestão nos seguintes pontos:</p>
+            `;
+
+            relatorioHTML += textoPadrao3;
+
+
+            if (recomendacoesSelecionadas.length > 0) {
+                relatorioHTML += "<h3>Recomendações:</h3>";
+                relatorioHTML += "<ul>";
+                recomendacoesSelecionadas.forEach(recomendacao => {
+                    relatorioHTML += "<li>" + recomendacoes[recomendacao] + "</li>";
+                });
+                relatorioHTML += "</ul>";
+            
+
+            }   
+
+            // Adicionar novo texto padrão após a seção de recomendações
+            var textoPadrao4 = `
+                <p>Oportuno que tais recomendações, expedidas com fulcro no art. 24, §3°[1], c/c art. 23, §4°, parte final, da Lei Complementar Estadual 709/1993[2], sejam incluídas pela SDG no cadastro específico previsto no art. 212, inc. II, alínea ‘r’, do Regimento Interno deste Tribunal de Contas[3], para fins de monitoramento. É preciso, ademais, alertar que a reincidência sistemática nas falhas incorridas poderá culminar no juízo desfavorável das contas, sujeitando ainda o responsável às sanções previstas no art. 104, inc. VI e §1°, da Lei Complementar Estadual 709/1993[4].</p>
+            `;
+
+            relatorioHTML += textoPadrao4;
+
+        document.getElementById("relatorio").innerHTML = relatorioHTML;
+
+        // Gerar arquivo DOCX
+        var content = document.getElementById("relatorio").innerHTML;
+        var converted = htmlDocx.asBlob(content);
+        saveAs(converted, 'relatorio.docx');
+}
+       
+    </script>
+</body>
+</html>

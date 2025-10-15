@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefeitura Municipal</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.45.0/docxtemplater.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip-utils.js"></script>
+</head>
+<body>
+    <header>
+        <img src="logo_mpcsp.png" alt="Logo da Minha Empresa" class="logo">
+    </header>    
+    <div class="container">
+        <h1>Informe sobre a Prefeitura Municipal</h1>
+        <form id="prefeituraForm">
+            <label for="prefeitura">Prefeitura Municipal:</label>
+            <select id="prefeitura" name="prefeitura">
+                <option value="Campinas">Campinas</option>
+                <!-- Adicione mais opções conforme necessário -->
+            </select><br><br>
+            
+            <label for="problemas">Problemas:</label>
+            <select id="problemas" name="problemas" multiple>
+                <option value="Alterações orçamentárias">Alterações orçamentárias</option>
+                <!-- Adicione mais problemas conforme necessário -->
+            </select><br><br>
+            
+            <label for="recomendacoes">Recomendações:</label>
+            <select id="recomendacoes" name="recomendacoes" multiple>
+                <option value="aprimore_cobranca_divida">Aprimore cobrança de dívida</option>
+                <!-- Adicione mais recomendações conforme necessário -->
+            </select><br><br>
+            
+            <label for="itemx">Item X:</label>
+            <select id="itemx" name="itemx" multiple>
+                <option value="parcial_quitação_do_mapa">Parcial quitação do mapa</option>
+                <!-- Adicione mais itens conforme necessário -->
+            </select><br><br>
+            
+            <button type="button" onclick="gerarRelatorio()">Gerar Relatório</button>
+        </form>
+        
+        <div id="relatorio"></div>
+    </div>
+    <script>
+        var prefeituras = {
+            "Campinas": {
+                "Id Assessor": "24",
+                "Habitantes": "1223237",
+                "Procurador responsável": "DR. CELSO AUGUSTO MATUCK FERES JR.",
+                "Porte": "Extra Grande",
+                "Matéria": "Contas Anuais"
+            }
+            // Adicione mais prefeituras conforme necessário
+        };
+
+        var problemas = {
+            "Alterações orçamentárias": "Concorre para emissão de parecer desfavorável realizar excessivas alterações orçamentárias..."
+            // Adicione mais problemas conforme necessário
+        };
+
+        var recomendacoes = {
+            "aprimore_cobranca_divida": "Aprimore seu sistema de cobrança da dívida ativa..."
+            // Adicione mais recomendações conforme necessário
+        };
+
+        var itemx = {
+            "parcial_quitação_do_mapa": "Parcial quitação do Mapa Orçamentário de Precatórios..."
+            // Adicione mais itens conforme necessário
+        };
+
+        function gerarRelatorio() {
+            var prefeitura = document.getElementById("prefeitura").value;
+            var problemasSelecionados = Array.from(document.getElementById("problemas").selectedOptions).map(option => option.value);
+            var recomendacoesSelecionadas = Array.from(document.getElementById("recomendacoes").selectedOptions).map(option => option.value);
+            var itemxSelecionado = Array.from(document.getElementById("itemx").selectedOptions).map(option => option.value);
+
+            var dadosPrefeitura = prefeituras[prefeitura];
+            var relatorioHTML = "<style>body { font-family: 'Arial', serif; }</style>";
+            relatorioHTML += '<img src="logo_mpcsp.png" alt="Logo da Minha Empresa" style="width: 150px; height: auto; margin-bottom: 20px;">';
+            relatorioHTML += "<h2>Relatório sobre " + prefeitura + "</h2>";
+            relatorioHTML += "<p><strong>Id Assessor:</strong> " + dadosPrefeitura["Id Assessor"] + "</p>";
+            relatorioHTML += "<p><strong>Habitantes:</strong> " + dadosPrefeitura["Habitantes"] + "</p>";
+            relatorioHTML += "<p><strong>Procurador responsável:</strong> " + dadosPrefeitura["Procurador responsável"] + "</p>";
+            relatorioHTML += "<p><strong>Porte:</strong> " + dadosPrefeitura["Porte"] + "</p>";
+            relatorioHTML += "<p><strong>Matéria:</strong> " + dadosPrefeitura["Matéria"] + "</p>";
+
+            // Adicionando Problemas
+            relatorioHTML += "<h3>Problemas</h3><ul>";
+            problemasSelecionados.forEach(function(problema) {
+                relatorioHTML += "<li>" + problemas[problema] + "</li>";
+            });
+            relatorioHTML += "</ul>";
+
+            // Adicionando Recomendações
+            relatorioHTML += "<h3>Recomendações</h3><ul>";
+            recomendacoesSelecionadas.forEach(function(recomendacao) {
+                relatorioHTML += "<li>" + recomendacoes[recomendacao] + "</li>";
+            });
+            relatorioHTML += "</ul>";
+
+            // Adicionando Item X
+            relatorioHTML += "<h3>Item X</h3><ul>";
+            itemxSelecionado.forEach(function(item) {
+                relatorioHTML += "<li>" + itemx[item] + "</li>";
+            });
+            relatorioHTML += "</ul>";
+
+            // Adicionando imagem de rodapé
+            relatorioHTML += '<div style="position: absolute; bottom: 0; width: 100%; text-align: center; page-break-after: always;">';
+            relatorioHTML += '<img src="logo_mpcsp_footer.png" alt="Rodapé Logo" style="width: 150px; height: auto; margin-top: 20px;">';
+            relatorioHTML += '</div>';
+
+            // Displaying the report
+            document.getElementById("relatorio").innerHTML = relatorioHTML;
+            
+            // Convert HTML to DOCX
+            var converted = htmlDocx.asBlob(relatorioHTML, {orientation: 'portrait', margins: {top: 720, right: 720, bottom: 720, left: 720}});
+            saveAs(converted, 'relatorio.docx');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, Helvetica, sans-serif 
+    ;
+    font-size: 12pt; /* Tamanho da fonte */
+    background-color: #ccc; /* fundo de tela cinza */
+    margin: 0;
+    padding: 0;
+}
+
+
+.container {
+    width: 50%;
+    margin: 130px auto;
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    margin-top: 50px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #000;
+    font-weight: bold; /* título dos filtros em negrito */
+}
+
+select, button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #7b001d;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #530013;
+}
+
+.logo {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
